@@ -68,4 +68,3 @@ void APW_Bird::Jump()
 
 	Mesh->BodyInstance.SetLinearVelocity(FVector::UpVector * JumpForce, false);
 }
-
