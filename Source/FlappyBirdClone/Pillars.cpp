@@ -9,6 +9,8 @@ APillars::APillars()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	SetRootComponent(Root);
 }
 
 // Called when the game starts or when spawned
@@ -41,8 +43,9 @@ void APillars::SpawnPillars()
 		UStaticMeshComponent* smc = (UStaticMeshComponent*)AddComponentByClass(UStaticMeshComponent::StaticClass(), true, FTransform(), true);
 
 		smc->RegisterComponent();
+		smc->AttachToComponent(Root, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 		smc->SetMobility(EComponentMobility::Movable);
-		smc->SetupAttachment(RootComponent);
+
 		smc->SetWorldLocation(GetActorLocation() + FVector(0, PillarGap * i, 0));
 		smc->SetStaticMesh(PillarMesh);
 		smc->SetWorldScale3D(FVector(1, 1, FMath::RandRange(1, 4)));
@@ -55,6 +58,14 @@ void APillars::SpawnPillars()
 void APillars::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	// Set the position of this Actor to be "moving" based on Dealta Time and a Speed
+	SetActorLocation(GetActorLocation() + FVector(0, MoveSpeed * DeltaTime, 0));
 
+	// Once we are of screen, move back to the beginning
+	if (GetActorLocation().Y < -1 * ((PillarGap * NumOfPillars) + 400.f))
+	{
+		SetActorLocation(GetActorLocation() + FVector(0, PillarGap * NumOfPillars + 1000.f, 0));
+	}
 }
 

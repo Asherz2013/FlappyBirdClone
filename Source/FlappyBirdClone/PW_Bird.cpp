@@ -11,8 +11,8 @@ APW_Bird::APW_Bird()
 
 	// Create the Static Mesh Component
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	// Attach it to the Default Root Component
-	Mesh->SetupAttachment(RootComponent);
+	// Make the mesh the root component
+	SetRootComponent(Mesh);
 
 	// Create the Spring Arm
 	CameraBoon = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));

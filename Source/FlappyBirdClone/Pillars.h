@@ -19,13 +19,18 @@ private:
 	int NumOfPillars = 10;
 
 	UPROPERTY(EditAnywhere, Category = "Setup")
-	float PillarGap = 100.0f;
+	float PillarGap = 500.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float MoveSpeed = -200.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	UStaticMesh* PillarMesh;
 
 	UFUNCTION(BluePrintCallable, Category = "On Construction")
 	void SpawnPillars();
+
+	USceneComponent* Root;
 
 public:	
 	// Sets default values for this actor's properties
