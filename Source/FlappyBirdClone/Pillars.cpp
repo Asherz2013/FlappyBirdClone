@@ -48,7 +48,7 @@ void APillars::SpawnPillars()
 
 		smc->SetWorldLocation(GetActorLocation() + FVector(0, PillarGap * i, 0));
 		smc->SetStaticMesh(PillarMesh);
-		smc->SetWorldScale3D(FVector(1, 1, FMath::RandRange(1, 4)));
+		smc->SetWorldScale3D(FVector(1, 1, FMath::RandRange(1, PillarMaxScale)));
 
 		Pillars.Add(smc);
 	}

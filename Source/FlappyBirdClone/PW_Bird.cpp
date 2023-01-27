@@ -13,6 +13,18 @@ APW_Bird::APW_Bird()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	// Make the mesh the root component
 	SetRootComponent(Mesh);
+	// Tell the Mesh to NOT move in the following Axies
+	Mesh->BodyInstance.bLockXTranslation = true;
+	Mesh->BodyInstance.bLockYTranslation = true;
+	// Tell the Mesh NOT to rotate
+	Mesh->BodyInstance.bLockXRotation = true;
+	Mesh->BodyInstance.bLockYRotation = true;
+	Mesh->BodyInstance.bLockZRotation = true;
+	Mesh->BodyInstance.bLockRotation = true;
+	// Hook up the OnHitEvent
+	Mesh->OnComponentHit.AddDynamic(this, &APW_Bird::OnMeshHit);
+	// Tell the Mesh its needs to "Simulate Generated Events"
+	Mesh->BodyInstance.bNotifyRigidBodyCollision = true;
 
 	// Create the Spring Arm
 	CameraBoon = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
@@ -35,11 +47,10 @@ void APW_Bird::BeginPlay()
 	
 	// Tell the Mesh to Simulate Physics
 	Mesh->SetSimulatePhysics(true);
-	// Tell the Mesh to NOT move in the following Axies
-	Mesh->BodyInstance.bLockXTranslation = true;
-	Mesh->BodyInstance.bLockYTranslation = true;
-	// Tell the Mesh NOT to rotate
-	Mesh->BodyInstance.bLockRotation = true;
+
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	PC->SetInputMode(FInputModeGameOnly());
+	PC->bShowMouseCursor = false;
 
 }
 
@@ -62,9 +73,25 @@ void APW_Bird::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void APW_Bird::OnMeshHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
+{
+	FString HitActorName = OtherActor->GetName();
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *HitActorName);
+
+	// Pause the game
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	PC->Pause();
+
+	// Show the "Retry Widget"
+	UUserWidget* WdgRetry = CreateWidget<UUserWidget>(GetGameInstance(), WidgetClass);
+	WdgRetry->AddToViewport();
+
+	PC->SetInputMode(FInputModeUIOnly());
+	PC->bShowMouseCursor = true;
+}
+
 void APW_Bird::Jump()
 {
 	UE_LOG(LogTemp, Warning, TEXT("JUMP"));
-
 	Mesh->BodyInstance.SetLinearVelocity(FVector::UpVector * JumpForce, false);
 }

@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Blueprint/UserWidget.h"
 
 #include "PW_Bird.generated.h"
 
@@ -27,6 +28,10 @@ private:
 	UPROPERTY(EditAnywhere)
 	float JumpForce = 1000.f;
 
+	// Using TSubclassof means we can only assign that type of class
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class UUserWidget> WidgetClass;
+
 	void Jump();
 
 public:
@@ -44,4 +49,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION()
+	void OnMeshHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult);
 };

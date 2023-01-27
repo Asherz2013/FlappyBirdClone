@@ -21,6 +21,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	float PillarGap = 500.0f;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta=(UIMin="0", UIMax="4"))
+	int32 PillarMaxScale = 4;
+
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	float MoveSpeed = -200.0f;
 
