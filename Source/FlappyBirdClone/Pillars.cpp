@@ -7,10 +7,7 @@
 APillars::APillars()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	SetRootComponent(Root);
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 // Called when the game starts or when spawned
@@ -18,54 +15,25 @@ void APillars::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Only run the timer if we have some Obsticles to spawn
+	if (!Obsticles.IsEmpty())
+	{
+		GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &APillars::SpawnPillars, SpawnTime, true);
+	}
 }
 
 void APillars::OnConstruction(const FTransform &Transform)
 {
 	Super::OnConstruction(Transform);
 
-	// Only Spawn Mesh's IF we have a Mesh to spawn
-	if (PillarMesh)
-	{
-		SpawnPillars();
-	}
 }
 
 void APillars::SpawnPillars()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Spawning Pillars"));
 	
-	Pillars.Empty(NumOfPillars);
-	
-	for (size_t i = 0; i < NumOfPillars; i++)
-	{
-		// Create a new Static Mesh Components
-		UStaticMeshComponent* smc = (UStaticMeshComponent*)AddComponentByClass(UStaticMeshComponent::StaticClass(), true, FTransform(), true);
-
-		smc->RegisterComponent();
-		smc->AttachToComponent(Root, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-		smc->SetMobility(EComponentMobility::Movable);
-
-		smc->SetWorldLocation(GetActorLocation() + FVector(0, PillarGap * i, 0));
-		smc->SetStaticMesh(PillarMesh);
-		smc->SetWorldScale3D(FVector(1, 1, FMath::RandRange(1, PillarMaxScale)));
-
-		Pillars.Add(smc);
-	}
+	// Spawn a new obsticle
+	AObjectsBase* obsticle = Obsticles[FMath::FRandRange(0, Obsticles.Num()-1)];
+		
+	//GetWorld()->SpawnActor<AObjectsBase>(obsticle);
 }
-
-// Called every frame
-void APillars::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	
-	// Set the position of this Actor to be "moving" based on Dealta Time and a Speed
-	SetActorLocation(GetActorLocation() + FVector(0, MoveSpeed * DeltaTime, 0));
-
-	// Once we are of screen, move back to the beginning
-	if (GetActorLocation().Y < -1 * ((PillarGap * NumOfPillars) + 400.f))
-	{
-		SetActorLocation(GetActorLocation() + FVector(0, PillarGap * NumOfPillars + 1000.f, 0));
-	}
-}
-

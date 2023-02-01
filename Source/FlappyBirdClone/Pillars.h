@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "ObjectsBase.h"
 #include "Pillars.generated.h"
 
 UCLASS()
@@ -12,28 +13,18 @@ class FLAPPYBIRDCLONE_API APillars : public AActor
 	GENERATED_BODY()
 	
 private:
-	UPROPERTY(VisibleAnywhere, Category = "Setup")
-	TArray<UStaticMeshComponent*> Pillars;
-
-	UPROPERTY(EditAnywhere, Category = "Setup")
-	int NumOfPillars = 10;
-
-	UPROPERTY(EditAnywhere, Category = "Setup")
-	float PillarGap = 500.0f;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta=(UIMin="0", UIMax="4"))
-	int32 PillarMaxScale = 4;
-
-	UPROPERTY(EditAnywhere, Category = "Setup")
-	float MoveSpeed = -200.0f;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	UStaticMesh* PillarMesh;
+	TArray<AObjectsBase*> Obsticles;
 
-	UFUNCTION(BluePrintCallable, Category = "On Construction")
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float SpawnTime = 5.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Setup")
+	float ObjectMoveSpeed = -200.0f;
+
+	FTimerHandle SpawnTimerHandle;
+
 	void SpawnPillars();
-
-	USceneComponent* Root;
 
 public:	
 	// Sets default values for this actor's properties
@@ -45,9 +36,5 @@ protected:
 
 	// Called when an instance of this class is placed (in editor) or spawned.
 	virtual void OnConstruction(const FTransform &Transform) override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 };
