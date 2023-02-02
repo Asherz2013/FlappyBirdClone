@@ -35,3 +35,20 @@ AObjectPillar::AObjectPillar()
 	BottomPillar->BodyInstance.bLockZRotation = true;
 	BottomPillar->BodyInstance.bLockRotation = true;
 }
+
+void AObjectPillar::OnConstruction(const FTransform& Transform)
+{
+	float gap = PillarGap / 2;
+	int scale = FMath::FRandRange(1, PillarMaxScale);
+
+	TopPillar->SetWorldScale3D(FVector(1, 1, scale));
+	TopPillar->SetWorldLocation(GetActorLocation() + FVector(0, 0, gap));
+
+	BottomPillar->SetWorldScale3D(FVector(1, 1, scale));
+	BottomPillar->SetWorldLocation(GetActorLocation() + FVector(0, 0, -gap));
+}
+
+void AObjectPillar::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}

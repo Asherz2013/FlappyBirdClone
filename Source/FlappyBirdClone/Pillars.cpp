@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Pillars.h"
 
 // Sets default values
@@ -18,22 +17,19 @@ void APillars::BeginPlay()
 	// Only run the timer if we have some Obsticles to spawn
 	if (!Obsticles.IsEmpty())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Starting to Spawning Pillars"));
 		GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &APillars::SpawnPillars, SpawnTime, true);
 	}
-}
-
-void APillars::OnConstruction(const FTransform &Transform)
-{
-	Super::OnConstruction(Transform);
-
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Obsticles"));
+	}
 }
 
 void APillars::SpawnPillars()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Spawning Pillars"));
-	
 	// Spawn a new obsticle
-	AObjectsBase* obsticle = Obsticles[FMath::FRandRange(0, Obsticles.Num()-1)];
-		
-	//GetWorld()->SpawnActor<AObjectsBase>(obsticle);
+	auto obsticle = Obsticles[FMath::FRandRange(0, Obsticles.Num()-1)];
+	
+	GetWorld()->SpawnActor<AObjectsBase>(obsticle, GetActorLocation(), GetActorRotation());
 }

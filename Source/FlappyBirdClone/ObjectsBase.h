@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ObjectsBase.generated.h"
 
-UCLASS(Abstract)
+UCLASS(abstract)
 class FLAPPYBIRDCLONE_API AObjectsBase : public AActor
 {
 	GENERATED_BODY()

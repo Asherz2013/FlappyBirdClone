@@ -14,7 +14,7 @@ class FLAPPYBIRDCLONE_API APillars : public AActor
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	TArray<AObjectsBase*> Obsticles;
+	TArray<TSubclassOf<AObjectsBase>> Obsticles;
 
 	UPROPERTY(EditAnywhere, Category = "Setup")
 	float SpawnTime = 5.0f;
@@ -33,8 +33,5 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	// Called when an instance of this class is placed (in editor) or spawned.
-	virtual void OnConstruction(const FTransform &Transform) override;
 
 };
