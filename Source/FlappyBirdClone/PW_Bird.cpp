@@ -2,6 +2,7 @@
 
 
 #include "PW_Bird.h"
+#include "FlappyBirdCloneGameModeBase.h"
 
 // Sets default values
 APW_Bird::APW_Bird()
@@ -44,14 +45,16 @@ APW_Bird::APW_Bird()
 void APW_Bird::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	// Tell the Mesh to Simulate Physics
-	Mesh->SetSimulatePhysics(true);
 
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	PC->SetInputMode(FInputModeGameOnly());
 	PC->bShowMouseCursor = false;
 
+	// Get the GameMode
+	GM_FPC = GetWorld()->GetAuthGameMode<AFlappyBirdCloneGameModeBase>();
+
+	WdgOverlay = CreateWidget<UUserWidget>(GetGameInstance(), WidgetHUDClass);
+	WdgOverlay->AddToViewport();
 }
 
 // Called every frame
@@ -59,6 +62,13 @@ void APW_Bird::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (GM_FPC->GetGameStarted())
+	{
+		// Tell the Mesh to Simulate Physics
+		Mesh->SetSimulatePhysics(true);
+
+		WdgOverlay->RemoveFromParent();
+	}
 }
 
 // Called to bind functionality to input
@@ -70,13 +80,12 @@ void APW_Bird::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	// Bind the "Jump" Input Action to this Pawn
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APW_Bird::Jump);
-
 }
 
 void APW_Bird::OnMeshHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
 {
 	FString HitActorName = OtherActor->GetName();
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *HitActorName);
+	//UE_LOG(LogTemp, Warning, TEXT("%s"), *HitActorName);
 
 	// Pause the game
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
@@ -92,6 +101,12 @@ void APW_Bird::OnMeshHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrim
 
 void APW_Bird::Jump()
 {
-	UE_LOG(LogTemp, Warning, TEXT("JUMP"));
-	Mesh->BodyInstance.SetLinearVelocity(FVector::UpVector * JumpForce, false);
+	if (!GM_FPC->GetGameStarted())
+	{
+		GM_FPC->StartCountDown();
+	}
+	else
+	{
+		Mesh->BodyInstance.SetLinearVelocity(FVector::UpVector * JumpForce, false);
+	}
 }

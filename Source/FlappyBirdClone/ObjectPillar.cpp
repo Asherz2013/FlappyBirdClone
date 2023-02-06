@@ -39,7 +39,7 @@ AObjectPillar::AObjectPillar()
 void AObjectPillar::OnConstruction(const FTransform& Transform)
 {
 	float gap = PillarGap / 2;
-	int scale = FMath::FRandRange(1, PillarMaxScale);
+	int scale = FMath::FRandRange(1.f, (float)PillarMaxScale);
 
 	TopPillar->SetWorldScale3D(FVector(1, 1, scale));
 	TopPillar->SetWorldLocation(GetActorLocation() + FVector(0, 0, gap));

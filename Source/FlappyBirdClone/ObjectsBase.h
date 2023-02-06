@@ -21,14 +21,12 @@ public:
 	// Sets default values for this actor's properties
 	AObjectsBase();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-	void SetSpeed(float speed);
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void SetSpeed(float speed);
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 };

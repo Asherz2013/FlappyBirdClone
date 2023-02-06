@@ -27,7 +27,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	float PillarGap = 400.f;
 
-
 public:
 	// Sets default values for this actor's properties
 	AObjectPillar();

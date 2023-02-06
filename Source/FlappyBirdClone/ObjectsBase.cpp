@@ -30,7 +30,9 @@ void AObjectsBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	FVector location = GetActorLocation();
+
 	// Set the position of this Actor to be "moving" based on Dealta Time and a Speed
-	SetActorLocation(GetActorLocation() + FVector(0, m_Speed * DeltaTime, 0));
+	SetActorLocation(location + FVector(0, m_Speed * DeltaTime, 0));
 }
 

@@ -30,9 +30,16 @@ private:
 
 	// Using TSubclassof means we can only assign that type of class
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class UUserWidget> WidgetClass;
+	TSubclassOf<UUserWidget> WidgetClass;
 
 	void Jump();
+
+	class AFlappyBirdCloneGameModeBase* GM_FPC;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> WidgetHUDClass;
+
+	UUserWidget* WdgOverlay;
 
 public:
 	// Sets default values for this pawn's properties

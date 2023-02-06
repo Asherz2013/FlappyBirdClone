@@ -26,12 +26,17 @@ private:
 
 	void SpawnPillars();
 
+	class AFlappyBirdCloneGameModeBase* GM_FPC;
+
+protected:
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 public:	
 	// Sets default values for this actor's properties
 	APillars();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 };
