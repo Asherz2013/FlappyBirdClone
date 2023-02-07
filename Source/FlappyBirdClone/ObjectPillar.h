@@ -22,7 +22,7 @@ private:
 	UStaticMeshComponent* BottomPillar;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup", meta = (UIMin = "0", UIMax = "4"))
-	int32 PillarMaxScale = 4;
+	int32 PillarMaxScale = 2;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
 	float PillarGap = 400.f;
