@@ -10,27 +10,31 @@ APW_Bird::APW_Bird()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Create the Static Mesh Component
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	// Make the mesh the root component
-	SetRootComponent(Mesh);
-	// Tell the Mesh to NOT move in the following Axies
-	Mesh->BodyInstance.bLockXTranslation = true;
-	Mesh->BodyInstance.bLockYTranslation = true;
-	// Tell the Mesh NOT to rotate
-	Mesh->BodyInstance.bLockXRotation = true;
-	Mesh->BodyInstance.bLockYRotation = true;
-	Mesh->BodyInstance.bLockZRotation = true;
-	Mesh->BodyInstance.bLockRotation = true;
+	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collision"));
+	SetRootComponent(BoxCollider);
+
+	// Tell the Box to NOT move in the following Axies
+	BoxCollider->BodyInstance.bLockXTranslation = true;
+	BoxCollider->BodyInstance.bLockYTranslation = true;
+	// Tell the Box NOT to rotate
+	BoxCollider->BodyInstance.bLockXRotation = true;
+	BoxCollider->BodyInstance.bLockYRotation = true;
+	BoxCollider->BodyInstance.bLockZRotation = true;
+	BoxCollider->BodyInstance.bLockRotation = true;
+
 	// Hook up the OnHitEvent
-	Mesh->OnComponentHit.AddDynamic(this, &APW_Bird::OnMeshHit);
+	BoxCollider->OnComponentHit.AddDynamic(this, &APW_Bird::OnMeshHit);
 	// Tell the Mesh its needs to "Simulate Generated Events"
-	Mesh->BodyInstance.bNotifyRigidBodyCollision = true;
+	BoxCollider->BodyInstance.bNotifyRigidBodyCollision = true;
+
+	// Create the Static Mesh Component
+	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
+	SkeletalMesh->SetupAttachment(BoxCollider);
 
 	// Create the Spring Arm
 	CameraBoon = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	// Attach to Mesh
-	CameraBoon->SetupAttachment(Mesh);
+	CameraBoon->SetupAttachment(BoxCollider);
 	// Set default Boon Length
 	CameraBoon->TargetArmLength = 600.f;
 	CameraBoon->SocketOffset = FVector3d(0.f, 400.f, 0.f);
@@ -64,8 +68,8 @@ void APW_Bird::Tick(float DeltaTime)
 
 	if (GM_FPC->GetGameStarted())
 	{
-		// Tell the Mesh to Simulate Physics
-		Mesh->SetSimulatePhysics(true);
+		// Tell the Box to Simulate Physics
+		BoxCollider->SetSimulatePhysics(true);
 
 		WdgOverlay->RemoveFromParent();
 	}
@@ -107,6 +111,7 @@ void APW_Bird::Jump()
 	}
 	else
 	{
-		Mesh->BodyInstance.SetLinearVelocity(FVector::UpVector * JumpForce, false);
+		BoxCollider->BodyInstance.SetLinearVelocity(FVector::UpVector * JumpForce, false);
+		SkeletalMesh->GetAnimInstance()->Montage_Play(Lift);
 	}
 }

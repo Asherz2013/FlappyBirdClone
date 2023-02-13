@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Blueprint/UserWidget.h"
+#include <Components/BoxComponent.h>
 
 #include "PW_Bird.generated.h"
 
@@ -16,8 +17,12 @@ class FLAPPYBIRDCLONE_API APW_Bird : public APawn
 	GENERATED_BODY()
 
 private:
+
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* Mesh;
+	UBoxComponent* BoxCollider;
+
+	UPROPERTY(EditAnywhere)
+	USkeletalMeshComponent* SkeletalMesh;
 
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* CameraBoon;
@@ -40,6 +45,12 @@ private:
 	TSubclassOf<UUserWidget> WidgetHUDClass;
 
 	UUserWidget* WdgOverlay;
+
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* Lift;
+
+	UPROPERTY(EditAnywhere)
+	UAnimMontage* HitSomething;
 
 public:
 	// Sets default values for this pawn's properties
