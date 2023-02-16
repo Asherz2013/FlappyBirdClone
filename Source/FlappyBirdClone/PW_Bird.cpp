@@ -3,6 +3,10 @@
 
 #include "PW_Bird.h"
 #include "FlappyBirdCloneGameModeBase.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Blueprint/UserWidget.h"
+#include <Components/BoxComponent.h>
 
 // Sets default values
 APW_Bird::APW_Bird()

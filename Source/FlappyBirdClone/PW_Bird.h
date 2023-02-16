@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "Camera/CameraComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Blueprint/UserWidget.h"
-#include <Components/BoxComponent.h>
-
 #include "PW_Bird.generated.h"
+
+class UBoxComponent;
+class USkeletalMeshComponent;
+class USpringArmComponent;
+class UCameraComponent;
+class UUserWidget;
+class UAnimMontage;
 
 UCLASS()
 class FLAPPYBIRDCLONE_API APW_Bird : public APawn

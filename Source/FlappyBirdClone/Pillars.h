@@ -4,8 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "ObjectsBase.h"
 #include "Pillars.generated.h"
+
+class AObjectsBase;
 
 UCLASS()
 class FLAPPYBIRDCLONE_API APillars : public AActor

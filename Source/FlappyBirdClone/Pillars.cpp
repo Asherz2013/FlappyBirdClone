@@ -3,6 +3,8 @@
 #include "Pillars.h"
 #include "FlappyBirdCloneGameModeBase.h"
 
+#include "ObjectsBase.h"
+
 // Sets default values
 APillars::APillars()
 {
