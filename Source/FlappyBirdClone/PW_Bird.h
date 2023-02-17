@@ -6,7 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "PW_Bird.generated.h"
 
-class UBoxComponent;
+class UStaticMeshComponent;
 class USkeletalMeshComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -21,7 +21,7 @@ class FLAPPYBIRDCLONE_API APW_Bird : public APawn
 private:
 
 	UPROPERTY(EditAnywhere)
-	UBoxComponent* BoxCollider;
+	UStaticMeshComponent* StaticMesh;
 
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* SkeletalMesh;

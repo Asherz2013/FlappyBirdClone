@@ -6,7 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Blueprint/UserWidget.h"
-#include <Components/BoxComponent.h>
+#include <Engine/BlockingVolume.h>
 
 // Sets default values
 APW_Bird::APW_Bird()
@@ -14,31 +14,33 @@ APW_Bird::APW_Bird()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collision"));
-	SetRootComponent(BoxCollider);
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Box Collision"));
+	SetRootComponent(StaticMesh);
 
 	// Tell the Box to NOT move in the following Axies
-	BoxCollider->BodyInstance.bLockXTranslation = true;
-	BoxCollider->BodyInstance.bLockYTranslation = true;
+	StaticMesh->BodyInstance.bLockXTranslation = true;
+	StaticMesh->BodyInstance.bLockYTranslation = true;
 	// Tell the Box NOT to rotate
-	BoxCollider->BodyInstance.bLockXRotation = true;
-	BoxCollider->BodyInstance.bLockYRotation = true;
-	BoxCollider->BodyInstance.bLockZRotation = true;
-	BoxCollider->BodyInstance.bLockRotation = true;
+	StaticMesh->BodyInstance.bLockXRotation = true;
+	StaticMesh->BodyInstance.bLockYRotation = true;
+	StaticMesh->BodyInstance.bLockZRotation = true;
+	StaticMesh->BodyInstance.bLockRotation = true;
 
 	// Hook up the OnHitEvent
-	BoxCollider->OnComponentHit.AddDynamic(this, &APW_Bird::OnMeshHit);
+	StaticMesh->OnComponentHit.AddDynamic(this, &APW_Bird::OnMeshHit);
 	// Tell the Mesh its needs to "Simulate Generated Events"
-	BoxCollider->BodyInstance.bNotifyRigidBodyCollision = true;
+	StaticMesh->BodyInstance.bNotifyRigidBodyCollision = true;
+	// Tell the Staticmesh to be hidden in game.
+	StaticMesh->bHiddenInGame = true;
 
 	// Create the Static Mesh Component
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
-	SkeletalMesh->SetupAttachment(BoxCollider);
+	SkeletalMesh->SetupAttachment(StaticMesh);
 
 	// Create the Spring Arm
 	CameraBoon = CreateDefaultSubobject<USpringArmComponent>(TEXT("Spring Arm"));
 	// Attach to Mesh
-	CameraBoon->SetupAttachment(BoxCollider);
+	CameraBoon->SetupAttachment(StaticMesh);
 	// Set default Boon Length
 	CameraBoon->TargetArmLength = 600.f;
 	CameraBoon->SocketOffset = FVector3d(0.f, 400.f, 0.f);
@@ -73,7 +75,7 @@ void APW_Bird::Tick(float DeltaTime)
 	if (GM_FPC->GetGameStarted())
 	{
 		// Tell the Box to Simulate Physics
-		BoxCollider->SetSimulatePhysics(true);
+		StaticMesh->SetSimulatePhysics(true);
 
 		WdgOverlay->RemoveFromParent();
 	}
@@ -93,7 +95,11 @@ void APW_Bird::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void APW_Bird::OnMeshHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
 {
 	FString HitActorName = OtherActor->GetName();
-	//UE_LOG(LogTemp, Warning, TEXT("%s"), *HitActorName);
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *HitActorName);
+
+	ABlockingVolume* BlockingVolume = Cast<ABlockingVolume>(OtherActor);
+	if (BlockingVolume)
+		return;
 
 	// Pause the game
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
@@ -115,7 +121,7 @@ void APW_Bird::Jump()
 	}
 	else
 	{
-		BoxCollider->BodyInstance.SetLinearVelocity(FVector::UpVector * JumpForce, false);
+		StaticMesh->BodyInstance.SetLinearVelocity(FVector::UpVector * JumpForce, false);
 		SkeletalMesh->GetAnimInstance()->Montage_Play(Lift);
 	}
 }
